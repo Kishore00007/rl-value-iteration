@@ -66,22 +66,28 @@ The algorithm is as follows:
 
 ## VALUE ITERATION FUNCTION
 ```
+import gym
+desc=['SFFF','HFFH','HFFG','FFFF']
+env = gym.make('FrozenLake-v1',desc=desc)
+init_state = env.reset()
+goal_state = 11
+P = env.env.P
+
+
 def value_iteration(P, gamma=1.0, theta=1e-10):
     V = np.zeros(len(P), dtype=np.float64)
-    # Write your code here
     while True:
-      Q = np.zeros((len(P), len(P[0])), dtype=np.float64)
+      Q=np.zeros((len(P),len(P[0])),dtype=np.float64)
       for s in range(len(P)):
         for a in range(len(P[s])):
-          for prob, next_state, reward, done in P[s][a]:
-            Q[s][a] += prob*(reward + gamma * V[next_state] * (not done))
-      if np.max(np.abs(V - np.max(Q, axis=1))) < theta:
+          for prob,next_state,reward,done in P[s][a]:
+            Q[s][a]+=prob*(reward+gamma*V[next_state]*(not done))
+      if(np.max(np.abs(V-np.max(Q,axis=1))))<theta:
         break
-      V = np.max(Q, axis=1)
-      pi=lambda s:{s:a for s,a in enumerate(np.argmax(Q, axis=1))}[s]
-
-
+      V=np.max(Q,axis=1)
+    pi=lambda s:{s:a for s , a in enumerate(np.argmax(Q,axis=1))}[s]
     return V, pi
+
 ```
 ## OUTPUT:
 ### Optimal Policy:
